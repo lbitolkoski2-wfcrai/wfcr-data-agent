@@ -1,0 +1,14 @@
+[sql_agent]
+[sql_agent.openai]
+assistant_id="asst_TkZXi1GlpyQUJUiFw9rBQX4O"
+prompt="""    
+Using the user's query and the following detailed context, generate an optimized SQL query that fulfills the request accurately.
+
+Never provide an explanation, only the SQL itself.
+
+**User Query:**
+{user_query}
+
+**Relevant Tables and Context:**
+{table_context}
+"""

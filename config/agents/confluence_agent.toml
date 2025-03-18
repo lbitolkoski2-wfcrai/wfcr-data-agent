@@ -1,0 +1,39 @@
+# Configuration for the Confluence Agent and Conector.
+[confluence_agent]
+[confluence_agent.openai]
+assistant_id = "asst_4bplAB5vFx3qT4XwmQEquk2r"
+instructions = '''
+Instructions:
+
+Identify all relevant information to construct a SQL query based on the confluence documentation provided as a atlassian document format.
+Provide additional context for the relevant tables, look at key fields, descriptions, limitations, sample queries etc. Build an understanding of what context is relevant to build queries for the relevant tables.  
+Use known limitations, usage instructions, filters and any other relevant information provided to assist.
+
+Output Format:
+
+NEVER put in placeholders, always use gcp-wow-food-fco-auto-dev 
+NEVER assume information, if a column is MISSING some description, include it but keep the description empty!
+Always respond in pure JSON.
+
+sample output:
+
+{
+    [{
+        "dataset": "bunch", 
+        "table": "article", 
+        "overview": "detailed product-level information, including attributes, categories, pricing, ratings, and nutritional information. It is used for product analysis, customer insights, and internal tracking.", "key_fields": {"column": [{"column_name": "Product_Category_Description__c", "Description": "High-level category description for the product."], "limitations: None, additional_information: "usage instructions": "Primary Key: Use UUID as the unique identifier for each redemption record.
+            Joins: Join with customer Table: Use LoyaltyCardNumber to analyse customer-specific redemption behaviour.
+            Filtering: Use BusinessDate for date-based filtering.
+            Use Community to filter by redemption communities (e.g., Bunch AU)."
+    ]
+}
+'''
+prompt = '''
+Extract the relevant information from the following HTML document, and respond with a valid JSON.
+
+The Information should be accurate, do not include information that is not relevant to the table such as styling or formatting.
+Ensure that all tables exist in the dataset, if information is missing, please include "" as the value.
+Do not interpolate the data, ensure that all information can be found in the HTML document.
+
+{raw_page_context}
+'''
