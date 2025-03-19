@@ -9,6 +9,9 @@ class DataAgentContext(BaseModel):
     responses: Dict[str, Any] # Responses from all agents {agent_name: response} 
     info: Dict[str, Any] # Potential logging information or other metadata
 
+class EmailContext(BaseModel):
+    task_prompt: str
+
 class Dataset(BaseModel):
     model_config = ConfigDict(extra='allow')
     dataset: str

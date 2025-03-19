@@ -45,18 +45,17 @@ class OpenAIConnector():
             thread_id=thread_id, 
             assistant_id=assistant_id, 
             response_format=response_spec,
-
+            poll_interval_ms=60000
         )        
-        #synchronous wait for completion
-        while run.status in ['queued', 'in_progress', 'cancelling']:
-            time.sleep(1)
-        
+
         if run.status == 'completed':
             msg = self.client.beta.threads.messages.list(thread_id=thread_id)
             final_output = {"thread_id": thread_id, "msg": msg, "status": run.status, "usage": run.usage.total_tokens}
+            logging.info(f"Node: {assistant_id} - Assistant status: {run.status} | Usage: {run.usage.total_tokens}")
         else:
             final_output = {"thread_id": thread_id, "msg": "Non complete status output", "status": "Failed", "usage": run.usage.total_tokens}
-            logging.error(f"Node: {assistant_id} - Assistant run failed with status: {run.status}")
+            logging.error(f"Node: {assistant_id} - Assistant status: {run.status} | Usage: {run.usage.total_tokens} | Error: {run.last_error}")
+        
         thread_messages = self.client.beta.threads.messages.list(thread_id)
         response_json_str = thread_messages.to_dict()['data'][0]['content'][0]['text']['value'] # Always the most recent message
         response_json = json.loads(response_json_str)

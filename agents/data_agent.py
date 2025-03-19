@@ -10,8 +10,8 @@ from pydantic import ValidationError
 from agents.components.assistant import Assistant
 from agents.components.confluence_parser import ConfluenceParser
 import schemas.data_agent_schema as data_agent_schema
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.getLogger("openai").setLevel(logging.ERROR)
+logging.getLogger("httpx").setLevel(logging.ERROR)
 
 class DataAgent:
     """
@@ -29,7 +29,7 @@ class DataAgent:
         self.openai_connector = openai_connector.OpenAIConnector(self.config)
         
     def load_local_context(self, ctx, agent_name): # Load LLM Responses from disk for testing purposes
-        with open(f'./output/llm/{agent_name}.json', 'r') as f:
+        with open(f'./output/llm/beef/{agent_name}.json', 'r') as f:
             llm_result = json.load(f)
         ctx.agent_context[agent_name] = {"response":{"response_msg":llm_result}}
         ctx.responses[agent_name] = agent_name
@@ -54,7 +54,8 @@ class DataAgent:
 
     def node_confluence_context(self, ctx):
         filtered_tables = ctx.agent_context['filter_tables']['response']['response_msg']
-        pages_to_retrieve = [t["table"] for t in filtered_tables["datasets"]]
+        pages_to_retrieve = [f"{t["dataset"]}.{t["table"]}" for t in filtered_tables["datasets"]]
+        logging.info(f"Node: confluence_context - Pages to retrieve: {pages_to_retrieve}")
         raw_table_context = self.confluence_connector.get_pages_from_qualified_names(pages_to_retrieve)
         raw_table_context = ConfluenceParser.parse_confluence_context(raw_table_context)
         return self.assistant.run_assistant(
@@ -80,11 +81,7 @@ class DataAgent:
         graph_builder.add_node("start", lambda ctx: ctx) 
         graph_builder.add_node("load_global_context", lambda ctx: self.node_global_context(ctx))  # Load shared context from cache
         
-        graph_builder.add_node("filter_tables", lambda ctx: self.load_local_context(ctx, "filter_tables"))  # Filter the tables based on user request
-        # graph_builder.add_node("confluence_context", lambda ctx: self.load_local_context(ctx, "confluence_context"))  # Load the confluence context
-        # graph_builder.add_node("sql_gen", lambda ctx: self.load_local_context(ctx, "sql_gen"))  # Generate SQL based on user request
-
-        # graph_builder.add_node("filter_tables", lambda ctx: self.node_filter_tables(ctx)) # Filter the tables based on user request
+        graph_builder.add_node("filter_tables", lambda ctx: self.node_filter_tables(ctx)) # Filter the tables based on user request
         graph_builder.add_node("confluence_context", lambda ctx: self.node_confluence_context(ctx))  # Load the confluence context
         graph_builder.add_node("sql_gen", lambda ctx: self.node_sql_gen(ctx))# Generate SQL based on user request
         graph_builder.add_node("execute_sql", lambda ctx: ctx) # TBI
@@ -105,16 +102,16 @@ class DataAgent:
 
 data_agent = DataAgent()
 data_agent_graph = data_agent.compile_execution_graph()
-
-logging.info("Data Agent | processing job:")
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 inputs = {
-    "email_context": {
-        "task_prompt": "How many customers purchased our beef burger range in the past 6 months?"
-    },
-    "global_context": {},  
-    "agent_context": {},  
-    "responses": {}, 
-    "info": {} 
-}
-
+        "email_context": {
+            "task_prompt": "How many customers purchased our beef burger range in the past 6 months?"
+        },
+        "global_context": {},  
+        "agent_context": {},  
+        "responses": {}, 
+        "info": {} 
+    }
 app = data_agent_graph.invoke(inputs)
+with open(f'./output/llm/data_agent_output_3.json', 'w') as f:
+    json.dump(app['agent_context'], f, indent=4)

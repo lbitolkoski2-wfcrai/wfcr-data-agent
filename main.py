@@ -11,7 +11,11 @@ import json
 import uuid
 import logging
 
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.getLogger("openai").setLevel(logging.ERROR)
+logging.getLogger("httpx").setLevel(logging.ERROR)
 dotenv.load_dotenv()
+
 app = FastAPI()
 data_agent = data_agent.DataAgent()
 data_agent_graph = data_agent.compile_execution_graph()
@@ -20,11 +24,8 @@ data_agent_graph = data_agent.compile_execution_graph()
 def dataRequest():
     """
     Entrypoint for email requests routed to the data-agent
-    Kicks off autogen actors to process the request
+    context parsed from HTTP request || loaded from db
     """
-    # 1. Parse the request
-    # 2. Kick off the data-agent
-    # 3. Return the job id as the response
     job_id = str(uuid.uuid4())
     logging.info("Data Agent | processing job:" + job_id)
     inputs = {
@@ -46,7 +47,6 @@ def dataRequest():
         json.dump(app['agent_context'], f, indent=4)
     
     return {"status": "success", "job_id": job_id}
-
 
 if __name__ == "__main__":
     import uvicorn

@@ -12,7 +12,7 @@ class Assistant:
         """"
         Initializes the Assistant with the required context and configuration
         args:
-            ctx (dict): The context object to be passed to the assistant
+            ctx (dict): The graph state
             assistant_name (str): The name of the assistant to be called
             response_schema (pydantic model): The schema for the response from the assistant
             additional_context (dict): Additional context to be passed to the assistant for formatting the prompt
