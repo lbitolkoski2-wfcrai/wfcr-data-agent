@@ -45,7 +45,7 @@ class OpenAIConnector():
             thread_id=thread_id, 
             assistant_id=assistant_id, 
             response_format=response_spec,
-            poll_interval_ms=60000
+            poll_interval_ms=1000*60, # 1 minute to avoid rate limiting
         )        
 
         if run.status == 'completed':
@@ -59,11 +59,10 @@ class OpenAIConnector():
         thread_messages = self.client.beta.threads.messages.list(thread_id)
         response_json_str = thread_messages.to_dict()['data'][0]['content'][0]['text']['value'] # Always the most recent message
         response_json = json.loads(response_json_str)
-        result = {
+        result = { # LLMResponse schema
             "thread_id": final_output['thread_id'],
-            "response_msg": response_json,
+            "message": response_json,
         }
-
         return result
     
  

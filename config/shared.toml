@@ -26,7 +26,7 @@ assistant_id = "asst_4bplAB5vFx3qT4XwmQEquk2r"
 
 [sql_agent]
 [sql_agent.openai]
-assistant_id="asst_TkZXi1GlpyQUJUiFw9rBQX4O"
+assistant_id="asst_jB0JIFeen8ECU0sX7rW6vCID"
 prompt="""    
 Using the user's query and the following detailed context, generate an optimized SQL query that fulfills the request accurately.
 

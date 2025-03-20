@@ -3,6 +3,7 @@ import dotenv
 from google.cloud import bigquery
 import json
 import logging
+from google.cloud.bigquery.job import QueryJobConfig
 
 class BigQueryConnector():
     def __init__(self, config):
@@ -42,8 +43,24 @@ class BigQueryConnector():
         results = [dict(row) for row in rows]
         return results
     
-    def execute_query(self, query):
-        query_result = self.client.query_and_wait(query)
+    def execute_query(self, query, **kwargs):
+        job_config = QueryJobConfig(**kwargs)
+        query_result = self.client.query_and_wait(query, job_config=job_config)
         return query_result
+    
+    def async_execute_query(self, query, **kwargs):
+        job_config = QueryJobConfig(**kwargs)
+        job = self.client.query(query, job_config=job_config)
+        job.result()
+        return job
 
+    def validate_query(self, query):
+        # Use dry run to validate the query
+        q_config = QueryJobConfig(dry_run=True)
+        try:
+            result = self.client.query(query, job_config=q_config)
+        except Exception as e:
+            logging.error(f"Query validation failed: {e}")
+            return {"valid": False, "message": str(e)}
+        return {"valid": True, "message": "Query is valid"}
 

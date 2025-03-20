@@ -11,7 +11,7 @@ import json
 import uuid
 import logging
 
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logging.getLogger("openai").setLevel(logging.ERROR)
 logging.getLogger("httpx").setLevel(logging.ERROR)
 dotenv.load_dotenv()
@@ -23,30 +23,28 @@ data_agent_graph = data_agent.compile_execution_graph()
 @app.get("/dataRequest")
 def dataRequest():
     """
-    Entrypoint for email requests routed to the data-agent
-    context parsed from HTTP request || loaded from db
+    Entrypoint for email requests routed to the data-agent"
     """
+    email_context = {} # Pull email context from request
     job_id = str(uuid.uuid4())
+
     logging.info("Data Agent | processing job:" + job_id)
+    
     inputs = {
-        "email_context": {
-            "task_prompt": "How many customers purchased our beef burger range in the past 6 months?"
-        },
+        "email_context": email_context,
         "global_context": {},  
         "agent_context": {},  
-        "responses": {}, 
-        "info": {} 
+        "responses": [], 
+        "info": {},
+        "job_id": job_id 
     }
 
     app = data_agent_graph.invoke(inputs)
-
-    from langchain_core.runnables.graph import MermaidDrawMethod
-    with open('./output/llm/data_agent_graph.png', 'wb') as f:
-        f.write(data_agent_graph.get_graph().draw_mermaid_png(draw_method=MermaidDrawMethod.API))
-    with open(f'./output/llm/data_agent_output_{uuid.uuid4()}.json', 'w') as f:
-        json.dump(app['agent_context'], f, indent=4)
-    
-    return {"status": "success", "job_id": job_id}
+    result = app['agent_context']['sql_gen']['response']['response_msg']['sql']
+    return {
+        "sql": result,
+        "job_id": app['job_id']
+    }
 
 if __name__ == "__main__":
     import uvicorn
