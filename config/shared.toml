@@ -1,4 +1,5 @@
 #Shared General Configuration Parameters
+
 [confluence]
 [confluence.connector]
 dataset_label = "gcp-dataset"
@@ -6,87 +7,25 @@ table_label = "gcp-table"
 base_url = "https://woolworths-agile.atlassian.net/"
 space_name = "WFCR"
 root_page_id = "33206304974"
-[confluence.assistants]
-assistant_id = "asst_4bplAB5vFx3qT4XwmQEquk2r"
 
 [bigquery]
 valid_datasets = ["ada", "bunch", "customer", "product", "sales"]
 project_id = "gcp-wow-food-fco-auto-dev"
 region = "region-us"
 
-[openai]
-model = "wfc-assistant-global"  # Azure deployment name 
+[llm_connector]
+connector_type="openai" # openai or gemini
+[llm_connector.openai]
+# deployment = "wfc-assistant-global"  # Azure deployment name
+deployment= "gpt-4o-mini-ucg"
 api_version = "2024-02-01"
-[openai.assistants]
-[openai.assistants.table_filter]
-assistant_id = "asst_NuMXHgDaV0x9JZ8jEU0TLNdK"
-[openai.assistants.confluence]
-assistant_id = "asst_4bplAB5vFx3qT4XwmQEquk2r"
-[openai.assistants.sql_summary]  
+[llm_connector.gemini]
+name = "Gemini"
 
-[sql_agent]
-[sql_agent.openai]
-assistant_id="asst_jB0JIFeen8ECU0sX7rW6vCID"
-prompt="""    
-Using the user's query and the following detailed context, generate an optimized SQL query that fulfills the request accurately.
+[logging]
+level = 20 # 10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL
+hide_http_logs = true # Hide OpenAI HTTP Reqs Polling for results
 
-Never provide an explanation, only the SQL itself.
+# RESERVED | use make bundle to generate
+[prompts]  
 
-**User Query:**
-{user_query}
-
-**Relevant Tables and Context:**
-{table_context}
-"""
-# Configuration for the Confluence Agent and Conector.
-[confluence_agent]
-[confluence_agent.openai]
-assistant_id = "asst_4bplAB5vFx3qT4XwmQEquk2r"
-instructions = '''
-Instructions:
-
-Identify all relevant information to construct a SQL query based on the confluence documentation provided as a atlassian document format.
-Provide additional context for the relevant tables, look at key fields, descriptions, limitations, sample queries etc. Build an understanding of what context is relevant to build queries for the relevant tables.  
-Use known limitations, usage instructions, filters and any other relevant information provided to assist.
-
-Output Format:
-
-NEVER put in placeholders, always use gcp-wow-food-fco-auto-dev 
-NEVER assume information, if a column is MISSING some description, include it but keep the description empty!
-Always respond in pure JSON.
-
-sample output:
-
-{
-    [{
-        "dataset": "bunch", 
-        "table": "article", 
-        "overview": "detailed product-level information, including attributes, categories, pricing, ratings, and nutritional information. It is used for product analysis, customer insights, and internal tracking.", "key_fields": {"column": [{"column_name": "Product_Category_Description__c", "Description": "High-level category description for the product."], "limitations: None, additional_information: "usage instructions": "Primary Key: Use UUID as the unique identifier for each redemption record.
-            Joins: Join with customer Table: Use LoyaltyCardNumber to analyse customer-specific redemption behaviour.
-            Filtering: Use BusinessDate for date-based filtering.
-            Use Community to filter by redemption communities (e.g., Bunch AU)."
-    ]
-}
-'''
-prompt = '''
-Extract the relevant information from the following HTML document, and respond with a valid JSON.
-
-The Information should be accurate, do not include information that is not relevant to the table such as styling or formatting.
-Ensure that all tables exist in the dataset, if information is missing, please include "" as the value.
-Do not interpolate the data, ensure that all information can be found in the HTML document.
-
-{raw_page_context}
-'''
-[filter_agent]
-[filter_agent.openai]
-assistant_id="asst_NuMXHgDaV0x9JZ8jEU0TLNdK"
-prompt="""    
-Using the user's query and the following detailed context, generate an optimized SQL query that fulfills the request accurately.
-
-Never provide an explanation, only the SQL itself.
-
-**User Query:**
-{user_query}
-
-**Relevant Tables and Context:**
-{table_context}"""

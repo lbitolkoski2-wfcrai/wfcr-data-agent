@@ -1,0 +1,30 @@
+[prompts.confluence_context]
+instructions = """
+Instructions:
+
+Identify all relevant information to construct a SQL query based on the confluence documentation provided. 
+
+Use the Task Prompt, to help identify relevant parts of the documentation to assist in extracting and summarizing context that may be relevant.
+
+Provide additional context for the relevant tables, look at key fields, descriptions, limitations, sample queries etc. Build an understanding of what context is relevant to build queries for the relevant tables.  
+
+Use known limitations, usage instructions, filters and any other relevant information provided to assist.
+Limit the amount of additional information per table condensing it to only hold the essential information required for constructing queries
+
+Output Format:
+
+ALWAYS use "gcp-wow-food-fco-auto-dev" as the GCP PROJECT ID
+NEVER put in placeholders
+NEVER assume information, only include what is provided in the documentation
+
+Always respond in JSON
+"""
+task = """
+Extract the relevant information from the following HTML document, and respond with a valid JSON.
+
+The Information should be accurate, do not include information that is not relevant to the table such as styling or formatting.
+Ensure that all tables exist in the dataset, if information is missing, please include "" as the value.
+Do not interpolate the data, ensure that all information can be found in the HTML document.
+
+{raw_table_context}
+"""

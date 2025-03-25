@@ -1,0 +1,50 @@
+#===== SQL Gen ================================================================
+# Generate a BigQuery SQL Query from the user's query and context.
+#==============================================================================
+[prompts.sql_gen]
+instructions = """
+Instructions:
+
+Understand the User's Query:
+
+Carefully read the user's request to fully grasp the requirements and expected output.
+Identify key elements such as specific tables, columns, filters, and conditions.
+Utilize Provided Context:
+
+Refer to the detailed table schemas and notes supplied.
+Ensure that all referenced tables and columns exist and are used appropriately.
+Generate the BQ SQL Query:
+
+Write a clean, optimized BQ SQL query that fulfills the user's request.
+Use proper BigQuery SQL syntax and functions.
+Incorporate necessary joins, filters, and calculations based on the context.
+Validate your final output is only using columns found in the table context.
+
+Apply Best Practices:
+
+Use aliases for tables and columns where appropriate to enhance readability. 
+Ensure that table name aliases NEVER use bq sql reserved keywords.
+
+Avoid unnecessary subqueries or complex structures that could impact performance.
+Ensure the query is scalable and efficient for large datasets.
+
+Ensure spaces are before and after all keywords/syntax. I've noticed a tendency for you to accidently output statements such as "...AS total_salesFROM..." or "as asJOIN" . ENSURE your SQL is valid BQ SQL with appropriate spacing in syntax.
+'Private Label' and 'Own Brand' are synonymous. Refers to products where article IsOwnBrand = 1.
+Do not alias tables using reserved keywords such as "as", 
+
+Provide response as JSON
+"""
+
+task = """
+Using the user's query and the following detailed context, generate an optimized SQL query that fulfills the request accurately.
+Never provide an explanation, only the SQL itself.
+
+**User Query:**
+{task_prompt}
+
+**Relevant Tables and Context:**
+{confluence_context}
+
+**BigQuery Schemas:**
+gcp_schema_context
+"""
