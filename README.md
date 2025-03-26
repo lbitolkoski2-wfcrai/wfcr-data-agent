@@ -1,9 +1,8 @@
 # Data Agent
 
-## Execution Graph
-Execution of the agent is defined by a LangGraph StateGraph.
-
-![Alt text](./docs/graph_diagram.png)
+The Data Agent is designed to handle generic requests for data.
+retrieve organizational and data context.
+construct queries and execute them.
 
 ## Schemas
 
