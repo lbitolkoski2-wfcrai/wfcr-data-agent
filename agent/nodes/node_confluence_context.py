@@ -9,7 +9,7 @@ class ConfluenceContextNode():
 
     async def run(self, ctx):
         filtered_tables = ctx.agent_context['filter_tables']['response']['result']
-        pages_to_retrieve = [f"{t["table"]}" for t in filtered_tables["datasets"]]
+        pages_to_retrieve = [f"{t["dataset"]}.{t["table"]}" for t in filtered_tables["datasets"]]
         logging.info(f"Node: confluence_context - Pages to retrieve: {pages_to_retrieve}")
         raw_table_context = self.confluence_connector.get_pages_from_qualified_names(pages_to_retrieve)
         raw_table_context = confluence_parser.ConfluenceParser.parse_confluence_context(raw_table_context)

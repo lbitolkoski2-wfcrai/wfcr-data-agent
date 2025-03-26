@@ -32,7 +32,12 @@ Ensure spaces are before and after all keywords/syntax. I've noticed a tendency 
 'Private Label' and 'Own Brand' are synonymous. Refers to products where article IsOwnBrand = 1.
 Do not alias tables using reserved keywords such as "as", 
 
+Never use placeholders like 'project' as project name or 'dataset' as dataset name. 
 Provide response as JSON
+
+IMPORTANT:
+PROJECT SHOULD ALWAYS BE 'gcp-wow-food-fco-auto-dev'
+SQL TABLE NAMES SHOULD ALWAYS BE IN THE FORMAT  'project.dataset.table' e.g. 'gcp-wow-food-fco-auto-dev.sales.article_sales'!
 """
 
 task = """

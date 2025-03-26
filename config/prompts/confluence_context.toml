@@ -9,7 +9,8 @@ Use the Task Prompt, to help identify relevant parts of the documentation to ass
 Provide additional context for the relevant tables, look at key fields, descriptions, limitations, sample queries etc. Build an understanding of what context is relevant to build queries for the relevant tables.  
 
 Use known limitations, usage instructions, filters and any other relevant information provided to assist.
-Limit the amount of additional information per table condensing it to only hold the essential information required for constructing queries
+Be as detailed as necessary but don't add irrelevant information, the more context you provide the better the SQL query can be constructed.
+Always include usage instructions under "usage" which should contain helpful filters, joins, and any other relevant information to assist in building the SQL query.
 
 Output Format:
 
