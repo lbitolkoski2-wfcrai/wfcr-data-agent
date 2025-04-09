@@ -16,9 +16,8 @@ region = "region-us"
 [llm_connector]
 connector_type="openai" # openai or gemini
 [llm_connector.openai]
-# deployment = "wfc-assistant-global"  # Azure deployment name
-deployment= "gpt-4o-mini-ucg"
-api_version = "2024-02-01"
+deployment = "wfc-assistant-global"  # Azure deployment name
+api_version = "2024-08-01-preview"
 [llm_connector.gemini]
 name = "Gemini"
 

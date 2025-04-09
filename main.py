@@ -3,6 +3,7 @@ Cloud Run Entry Point WebServer for the data-agent
 Responsible for initializing the FastAPI server and defining the endpoints for the data-agent
 Initializes the required DataAdapters and Actors for processing the requests
 """
+import uvicorn
 
 import agent.data_agent as data_agent
 from fastapi import FastAPI, Request as fastapi_request
@@ -28,14 +29,12 @@ async def data_request(request: fastapi_request):
 
     graph_inputs = data_agent.build_graph_inputs(email_context=email_context)
     logging.info("Data Agent | processing job:" + graph_inputs['job_id'])
-    data_agent_result = await data_agent_graph.ainvoke(graph_inputs)
+    data_agent_result = await data_agent_graph.ainvoke(graph_inputs) 
     return data_agent_result['agent_context']
 
 @app.get("/")
 def health_check():
     return {"status": "Okay!"}
 
-
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000,  log_level="info")
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000,  log_level="info")

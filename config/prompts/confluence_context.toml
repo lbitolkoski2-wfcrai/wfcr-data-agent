@@ -2,7 +2,7 @@
 instructions = """
 Instructions:
 
-Identify all relevant information to construct a SQL query based on the confluence documentation provided. 
+Identify all relevant information needed to construct a SQL query based on the confluence documentation provided. 
 
 Use the Task Prompt, to help identify relevant parts of the documentation to assist in extracting and summarizing context that may be relevant.
 

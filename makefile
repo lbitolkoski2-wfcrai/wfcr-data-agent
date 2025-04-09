@@ -23,12 +23,12 @@ bundle: $(TOML_FILES)
 .PHONY: utils
 utils:
 	@echo "Building agent_utils..."
-	@cd ../agent_utils && uv build
+	@cd ../wfcrai-agent-utils && uv build
 	@echo "Copying the built .whl file from agent_utils..."
-	@cp ../agent_utils/dist/*.whl .
+	@cp ../wfcrai-agent-utils/dist/*.whl .
 	@echo "Installing agent_utils into the current project..."
 	@uv pip install *.whl
-	@echo "Done adding and installing agent_utils."
+	@echo "Done adding and installing agent utils."
 
 .PHONY: push # Push to artifact registry
 push: push 

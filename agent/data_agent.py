@@ -6,6 +6,8 @@ from agent.nodes.node_filter_tables import FilterTablesNode
 from agent.nodes.node_global_context import GlobalContextNode
 from agent.nodes.node_sql_gen import SQLGenNode
 
+from langfuse import Langfuse
+
 import uuid
 import toml, json, os
 import logging

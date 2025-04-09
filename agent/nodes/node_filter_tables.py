@@ -1,4 +1,4 @@
-import agent_utils.schemas.data_agent_schema as data_agent_schema
+from schemas.data_agent_schema import FilterAgentResponse
 
 class FilterTablesNode():
     def __init__(self, agent):
@@ -9,8 +9,8 @@ class FilterTablesNode():
         result = await self.assistant.run_assistant(
             ctx,
             "filter_tables",
-            data_agent_schema.FilterAgentResponse,
-            additional_context={"gcp_table_context": gcp_table_context}
+            FilterAgentResponse,
+            additional_context={"gcp_table_context": gcp_table_context},
         )
         ctx.agent_context['filter_tables'] = result
         return ctx

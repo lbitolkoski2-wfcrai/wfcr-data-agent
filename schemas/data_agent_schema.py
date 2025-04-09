@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Optional
 
 class DataAgentContext(BaseModel):
     email_context: Dict[str, Any] # Email context for the request
@@ -11,9 +11,15 @@ class DataAgentContext(BaseModel):
 
 
 class ConfluenceTable(BaseModel):
-    table_name: str
-    table_id: str
-    limitations: List[str]
+    resource_name: str
+    overview: str
+    key_fields: Optional[Dict] = None
+    sample_query: Optional[str] = None
+    usage_instructions: Optional[str] = None
+    notes: Optional[str] = None
+    dependencies: Optional[List[str]] = None
+    additional_details: Optional[str] = None
+
 
 class EmailContext(BaseModel):
     task_prompt: str
@@ -28,7 +34,7 @@ class FilterAgentResponse(BaseModel):
     datasets: List[Dataset]
 
 class ConfluenceAgentResponse(BaseModel):
-    datasets: List[Dataset]
+    datasets: List[ConfluenceTable]
 
 class SQLGenAgentResponse(BaseModel):
     sql: str

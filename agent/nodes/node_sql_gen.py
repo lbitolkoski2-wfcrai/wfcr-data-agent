@@ -1,4 +1,4 @@
-from agent_utils.schemas.data_agent_schema import SQLGenAgentResponse
+from schemas.data_agent_schema import SQLGenAgentResponse
 
 class SQLGenNode():
     def __init__(self, agent):
@@ -14,7 +14,8 @@ class SQLGenNode():
             SQLGenAgentResponse,
             additional_context={
                 "confluence_context": confluence_context, 
-                "gcp_schema_context": gcp_context}
+                "gcp_schema_context": gcp_context
+            }
         )
         ctx.agent_context['sql_gen'] = result
         return ctx

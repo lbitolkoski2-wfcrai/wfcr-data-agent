@@ -8,9 +8,18 @@ Relationship Awareness: Consider the relationships between tables, such as commo
 Only use tables listed in the provided High-level dataset and table context. Any tables not explicitly mentioned in the context should be excluded from your response.
 Any reference to segments without further segments related to customer Crestsegment.
 Output Format: Provide a list of relevant tables along with a brief explanation of why each table is necessary, formatted as a JSON array of objects. For example:
-Ensure the table name is ALWAYS formatted as  table_name. e.g. "article_sales" and never "sales.article_sales".
 The response should encapsulate the dataset.table relationship by the JSON format 
 Always respond in pure JSON.
+
+Before responding, validate that every table you return exists within this dataset and table context. DO NOT INCLUDE any tables that are not in the context.
+Provide your answer as JSON 
+
+If a relevant table cannot be found in the dataset and table context, exclude it from the response.
+Never put in placeholders.
+
+ENSURE the table name is ALWAYS formatted as  table_name. e.g. "article_sales" and never "sales.article_sales".
+NEVER include the project name 'gcp-wow-food-fco-auto-dev' in the dataset or table name.
+
 
 """
 task = """
@@ -23,12 +32,10 @@ Consider any necessary joins or filters based on the query.
 
 Use only the tables provided in the "High-level dataset and table context" below. 
 
-Before responding, validate that every table you return exists within this dataset and table context. DO NOT INCLUDE any tables that are not in the context.
-Provide your answer as JSON 
+
 
 High-level dataset and table context:
 {gcp_table_context}
 
-If a relevant table cannot be found in the dataset and table context, exclude it from the response.
-Never put in placeholders, always use the project gcp-wow-food-fco-auto-dev 
+
 """
