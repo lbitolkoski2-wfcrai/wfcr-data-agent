@@ -1,5 +1,4 @@
 import logging
-from agent_utils.logging_utils import observe_with_tags
 from langfuse.decorators import observe, langfuse_context
 
 class GlobalContextNode():

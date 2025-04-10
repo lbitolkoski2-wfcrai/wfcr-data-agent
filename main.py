@@ -26,6 +26,8 @@ async def data_request(request: fastapi_request):
     email_context = request_json.get('email_context', {})
     if email_context.get('task_prompt', None) is None:
         return {"error": "email_context or email_context.task_prompt not found in request"}
+    if email_context.get('request_id', None) is None:
+        email_context['request_id'] = str(uuid.uuid4()) # testing purposes, remove when request_id is added to the email context
 
     graph_inputs = data_agent.build_graph_inputs(email_context=email_context)
     logging.info("Data Agent | processing job:" + graph_inputs['job_id'])
@@ -36,5 +38,7 @@ async def data_request(request: fastapi_request):
 def health_check():
     return {"status": "Okay!"}
 
+import os
 if __name__ == "__main__":
+
     uvicorn.run(app, host="0.0.0.0", port=8000,  log_level="info")

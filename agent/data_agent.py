@@ -17,7 +17,7 @@ import dotenv
 import schemas.data_agent_schema as data_agent_schema
 import asyncio
 
-
+from agent_utils.logging_utils import langfuse_wrap_node
 class DataAgent:
     """
     Data Agent: pull data from various sources and generate SQL queries
@@ -39,7 +39,7 @@ class DataAgent:
     def set_logging(self):
         logging_config = self.config["logging"]
         logging.basicConfig(level=logging_config['level'], format='%(asctime)s - %(levelname)s - %(message)s')
-        if (logging_config['hide_http_logs']):
+        if (logging_config.get('hide_http_logs', False)):
             logging.getLogger("openai").setLevel(logging.ERROR) 
             logging.getLogger("httpx").setLevel(logging.ERROR)
   
@@ -55,7 +55,7 @@ class DataAgent:
         }
         graph_builder.add_node("start", lambda ctx: ctx)
         for name, node in nodes.items():
-            graph_builder.add_node(name, node.run) # Node must have a run method
+            graph_builder.add_node(name, langfuse_wrap_node(node.run,name)) # Node must have a run method
 
         #========= Edge Definitions ==========
         graph_builder.add_edge("start", "load_global_context")

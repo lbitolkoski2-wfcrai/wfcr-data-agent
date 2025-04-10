@@ -23,7 +23,6 @@ name = "Gemini"
 
 [logging]
 level = 20 # 10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL
-hide_http_logs = true # Hide OpenAI HTTP Reqs Polling for results
 
 # RESERVED | use make bundle to generate
 [prompts]  
