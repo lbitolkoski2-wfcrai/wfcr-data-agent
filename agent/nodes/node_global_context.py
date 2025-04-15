@@ -14,5 +14,5 @@ class GlobalContextNode():
         ctx.global_context['gcp_tables_schema'] = self.bq_connector.project_tables() 
         ctx.global_context['gcp_columns_schema'] = self.bq_connector.project_columns()
         logging.info("Node: load_global_context - Global Context loaded")
-        langfuse_context.update_current_trace(ctx.global_context)
+        langfuse_context.update_current_trace(output=ctx.global_context)
         return ctx
